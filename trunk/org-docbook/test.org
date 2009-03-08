@@ -1,0 +1,313 @@
+#
+#+TITLE: Exporting Org Files to DocBook
+#+EMAIL: cbaoqiu@yahoo.com
+#+STARTUP: showall
+#
+# $Id: test.org,v 1.13 2009/03/08 04:18:23 bcui Exp $
+#
+
+* Introduction
+
+This is a text file written in Org-mode ([[http://www.orgmode.org]]), and it
+is used as a test case for my Org-to-DocBook exporter.  Each section
+contains some feature in Org-mode...
+
+* About Sections and Subsections
+
+DocBook supports numbered sections and also /recursive/ sections.  We
+choose recursive sections (element =<section>=) in DocBook exporter to
+make generated DocBook documents much more portable.  Sections can be
+freely moved to different places, either in an article or in a book, at
+different levels.
+
+As Org files tend to contain a lot of headings, which are transformed to
+/empty/ sections in DocBook.  Empty paragraphs, like =<para></para>=,
+are added for such sections to make generated XML document valid.
+
+** Subsection x.1
+
+*** Empty Subsection x.1.1
+*** Subsection x.1.2
+
+** Subsection x.2
+
+*** Subsection x.2.1
+
+**** Subsection x.2.1.1
+***** Subsection x.2.1.1.1
+****** Subsection x.2.1.1.1.1
+
+** Subsection x.3
+
+* About Images
+
+Here is an image with caption and label:
+
+#+CAPTION: Caption of image GNU.png
+#+LABEL:   fig:gnu-png
+[[~/Org/GNU.png]]
+
+In Org-mode, an image file can be used as the description of a link, and
+the image is exported as a click-able image in HTML export.  In DocBook
+format, the image file is formatted as it is.  See the following link:
+[[file:///Users/bcui/Downloads/tdg5/en/html/docbook.html][file:/Users/bcui/Org/docbook-cover.png]]
+
+* About Timestamps, TODOs, and Tags
+
+This is a timestamp <2009-03-02 Mon>. 
+
+For TODOs, we can simply put the TODO keywords in =[...]= to make them
+stand out in section titles.  For tags, they are formatted as
+superscript.  We may need to find other better-looking formats.
+
+** TODO My First Item.                                          :work:urgent:
+
+** DONE My Second Item.
+
+** TODO My Third Item.                                            :home:_old:
+
+* About Footnotes
+
+Please see my first footnote. [fn:1]  And here is the second one. [fn:2]
+
+Check the first footnote again. [fn:1]
+
+Here is a long footnote. [fn:three]
+
+This is a LaTeX-like anonymous footnote. [fn:: This is the inline
+\par definition of this anonymous footnote.]
+
+This is another footnote with inline definition /and/ a
+name.  [fn:name-1: This is the definition of second inline footnote,
+\par which has a name.]
+
+Here I am referring to the previous named footnote. [fn:name-1]
+
+* About Links
+
+This is an http link: [[http://www.cnn.com][CNN Web Site]].
+
+This is another one: [[http://www.cnn.com]].
+
+FTP link: [[ftp://ftp.gnu.org/path][One Gnu FTP Link]].
+
+FTP link: [[ftp://ftp.gnu.org/path/to/something]].
+
+File link: [[file:~/.emacs::45]].
+
+File link: file:~/Org/test0.org.
+
+Check the first footnote for the third time. [fn:1]
+
+* About Tables
+
+This is a simple table:
+
+| First Name | Last Name |   Tele # |
+|------------+-----------+----------|
+| Baoqiu     | Cui       | 123-4567 |
+| David      | Smith     | 999-9999 |
+| John       | Dean      | 888-8888 |
+|------------+-----------+----------|
+| Scott      | Fisher    | 111-1111 |
+
+* About Verses and Quotes
+
+If the source of a verse or quote (a.k.a. /attribution/ in DocBook) is
+found in the verse or quote, an =<attribute>= element will be added to
+element =<blockquote>=.  This helps format verses or quotes more nicely.
+
+** Verses
+
+The following is a verse with attribution ("=-- AlexSchroeder=", which
+appears in the /last/ line in the verse):
+
+#+BEGIN_VERSE
+Great clouds overhead
+Tiny black birds rise and fall
+Snow covers Emacs
+
+-- AlexSchroeder
+#+END_VERSE
+
+The next one is a verse /without/ attribution:
+
+#+BEGIN_VERSE
+O, for a muse of fire, that would ascend
+The brightest heaven of invention!
+A kingdom for a stage, princes to act,
+And monarchs to behold the swelling scene!
+#+END_VERSE
+
+** Block Quotes
+
+This is a block quote with attribution ("=-- Albert Einstein=", which
+appears in the /last/ line of the quote).
+
+#+BEGIN_QUOTE
+Everything should be made as simple as possible,
+but not any simpler.  -- Albert Einstein
+#+END_QUOTE
+
+Here is one block quote that has two paragraphs but no attribution:
+
+#+BEGIN_QUOTE
+God does not care about our mathematical difficulties. He integrates
+empirically.
+
+Great spirits have always found violent opposition from
+mediocrities. The latter cannot understand it when a man does not
+thoughtlessly submit to hereditary prejudices but honestly and
+courageously uses his intelligence.
+#+END_QUOTE
+
+* About Literal Examples
+
+You can include literal examples that should not be subjected to
+markup.  Such examples will be typeset in monospace, so this is well
+suited for source code and similar examples.  
+
+#+BEGIN_EXAMPLE
+    Some example from a text file.  This can includes characters like '<'
+    and '>', etc.
+    
+    The following line should not be regarded as the continuation of a long
+    footnote: 
+    \par This is NOT part of a footnote.
+#+END_EXAMPLE
+
+For simplicity when using small examples, you can also start the
+example lines with a colon followed by a space.  There may also be
+additional whitespace before the colon:
+
+Here is an example:
+:     #include <iostream>
+:     #include <iterator>
+:     using namespace std;
+:     
+:     int main(int ac, char* av[])
+:     {
+:         try {
+:           ...
+:         }
+:         catch(exception& e) {
+:             cerr << "error: " << e.what() << "\n";
+:             return 1;
+:         }
+:         catch(...) {
+:             cerr << "Exception of unknown type!\n";
+:         }
+:     
+:         return 0;
+:     }
+
+* About Drawers
+
+** This is a headline
+   Still outside the drawer.
+   :PROPERTIES:
+   This is inside the drawer.
+   :END:
+   After the drawer.
+
+* About Typesetting
+
+This is _underlined_, and *emphasize*, and =verbatim=, and /italic/
+text, and ~verbatim~ text.
+
+* About Lists
+
+This is paragraph one.  This is paragraph one.  This is paragraph one.
+This is paragraph one.  This is paragraph one.  This is paragraph one.
+This is paragraph one.  This is paragraph one.
+
+This is paragraph two.  This is paragraph two.  This is paragraph two.
+This is paragraph two.  This is paragraph two.  This is paragraph two.
+This is paragraph two.  This is paragraph two.
+
+This is an itemized list:
+
+  - Item one.
+
+  - Item two.
+
+This is a 3-level nested list:
+
+  - Item one.
+
+    This item contains a description list (or /variable list/ in
+    DocBook):
+
+    - Term ONE :: This is term one.
+
+    - Term TWO :: This is term two.
+
+                  1. Description one.
+
+                     Second paragraph in description one.
+
+                     Third paragraph in description one.
+
+                  2. Description two.
+
+                  3. Description three.
+
+  - Item two.
+
+
+This is an ordered list:
+
+  1. Number One.
+
+     Another paragraph for number one item.
+
+     Another another paragraph for number one item.
+
+  2. Number Two.
+
+
+This is a another variable list:
+  
+  - Term One :: Term 1 definition.  Term 1 definition.  Term 1
+                definition.  Term 1 definition.  Term 1 definition.
+                Term 1 definition.  Term 1 definition.
+
+  - Term Two :: Term 2 definition.  Term 2 definition.  Term 2
+                definition.  Term 2 definition.  Term 2 definition.
+                Term 2 definition.  Term 2 definition.  Term 2
+                definition.  Term 2 definition.
+
+This is a check list:
+
+  - [-] Check boxes [2/3]
+
+    - [X] Check box 1
+
+    - [ ] Check box 2
+
+    - [X] Check box 3
+
+* Random Pieces
+
+** Lord of the Rings
+
+        My favorite scenes are (in this order)
+        1. The attack of the Rohirrim
+        2. Eowyn's fight with the witch king
+           + this was already my favorite scene in the book
+           + I really like Miranda Otto.
+        3. Peter Jackson being shot by Legolas
+            - on DVD only
+           He makes a really funny face when it happens.
+        But in the end, no individual scenes matter but the film as a whole.
+        Important actors in this film are:
+        - Elijah Wood :: He plays Frodo
+        - Sean Austin :: He plays Sam, Frodo's friend.  I still remember
+          him very well from his role as Mikey Walsh in the Goonies.
+
+[fn:1] Body of first footnote.
+[fn:2] Body of second footnote.
+[fn:three] This is the body of the third footnote, and it is long,
+\par and it is long, and it is long, and it is long, and it is long,
+\par and it is long, and it is long, and it is long, and it is long,
+\par and it is long, and it is long, and it is long.... Stop here!
