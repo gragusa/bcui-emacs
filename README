@@ -1,2 +1,13 @@
+#
+# File: org-docbook/README
+#
+# $Id$
+#
+
 This project is the home of Emacs Elisp code written/maintained/modified
 by Baoqiu Cui.
+
+This directory contains:
+
+org-docbook/
+    A DocBook exporter for Org-mode.

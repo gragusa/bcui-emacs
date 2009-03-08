@@ -1,0 +1,36 @@
+#
+# File: org-docbook/README
+#
+# $Id$
+#
+
+This is the DocBook exporter for Org-mode, a tool written in Emacs Lisp
+to export text files written in Org-mode to DocBook.
+
+This directory contains:
+
+README
+    This file.
+
+org-export-docbook.el
+    The main part of DocBook exporter code.
+
+org-exp.el
+    Slightly modified version of file org-exp.el that is part of
+    Org-mode.  Currently this file is synced up with Org-mode 6.24.
+
+test.org
+    An Org file used for testing.  It includes all the features that
+    current version of DocBook exporter supports.
+
+test.xml
+    DocBook XML file exported from test.org.
+
+test.pdf
+    PDF file generated from DocBook XML file test.xml.
+
+If you have any comments on how to improve this exporter, please send
+email to cbaoqiu AT yahoo DOT com.
+
+
+Baoqiu Cui
