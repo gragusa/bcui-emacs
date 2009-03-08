@@ -4,7 +4,7 @@
 ;;
 ;; Emacs Lisp Archive Entry
 ;; Filename: org-export-docbook.el
-;; Version: $Id: org-export-docbook.el,v 1.42 2009/03/08 04:20:19 bcui Exp $
+;; Version: $Id$
 ;; Author: Baoqiu Cui <cbaoqiu AT yahoo DOT com>
 ;; Maintainer: Baoqiu Cui <cbaoqiu AT yahoo DOT com>
 ;; Keywords: org, wp, docbook
