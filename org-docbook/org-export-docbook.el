@@ -4,11 +4,12 @@
 ;;
 ;; Emacs Lisp Archive Entry
 ;; Filename: org-export-docbook.el
-;; Version: $Id$
+;; Version: 1.0
 ;; Author: Baoqiu Cui <cbaoqiu AT yahoo DOT com>
 ;; Maintainer: Baoqiu Cui <cbaoqiu AT yahoo DOT com>
 ;; Keywords: org, wp, docbook
 ;; Description: Converts an org-mode buffer into DocBook
+;; $Id$
 ;; URL:
 
 ;; This file is NOT part of GNU Emacs.
@@ -1094,6 +1095,7 @@ If there are links in the string, don't modify these."
               (if org-docbook-para-open "<para>" "")))))
 
 (defun org-export-docbook-preprocess (parameters)
+  "Extra preprocessing work for DocBook export."
   ;; Merge lines starting with "\par" to one line.  Such lines are
   ;; regarded as the continuation of a long footnote.
   (goto-char (point-min))
