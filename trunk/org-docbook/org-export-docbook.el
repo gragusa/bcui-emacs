@@ -1093,6 +1093,14 @@ If there are links in the string, don't modify these."
                 "")
               (if org-docbook-para-open "<para>" "")))))
 
+(defun org-export-docbook-preprocess (parameters)
+  ;; Merge lines starting with "\par" to one line.  Such lines are
+  ;; regarded as the continuation of a long footnote.
+  (goto-char (point-min))
+  (while (re-search-forward "\n\\(\\\\par\\>\\)" nil t)
+    (if (not (get-text-property (match-beginning 1) 'org-protected))
+        (replace-match ""))))
+
 (provide 'org-export-docbook)
 
 ;;; org-export-docbook.el ends here
