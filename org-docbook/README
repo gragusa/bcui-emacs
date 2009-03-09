@@ -16,7 +16,7 @@ This directory contains:
 README
     This file.
 
-org-export-docbook.el
+org-docbook.el
     The main part of DocBook exporter code.
 
 test.org
