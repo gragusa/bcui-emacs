@@ -278,9 +278,9 @@ This is a variable list (a.k.a. Variable Lists in DocBook):
                 Term 2 definition.  Term 2 definition.  Term 2
                 definition.  Term 2 definition.
 
-** Check List
+** Check Box Lists
 
-This is a check list:
+This is a check box list:
 
   - [-] Check boxes [2/3]
 
