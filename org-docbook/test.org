@@ -3,7 +3,7 @@
 #+EMAIL: cbaoqiu@yahoo.com
 #+STARTUP: showall
 #
-# $Id: test.org,v 1.13 2009/03/08 04:18:23 bcui Exp $
+# $Id$
 #
 
 * Introduction
