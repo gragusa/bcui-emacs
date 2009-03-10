@@ -101,8 +101,13 @@ Check the first footnote for the third time. [fn:1]
 
 * About Tables
 
-This is a simple table:
+** Regular Tables
 
+If a table has a caption, then it will be formatted as a regular table
+in DocBook using element =<table>=.  Here is an example table that has a
+caption "My Phone Book":
+
+#+CAPTION: My Phone Book
 | First Name | Last Name |   Tele # |
 |------------+-----------+----------|
 | Baoqiu     | Cui       | 123-4567 |
@@ -110,6 +115,18 @@ This is a simple table:
 | John       | Dean      | 888-8888 |
 |------------+-----------+----------|
 | Scott      | Fisher    | 111-1111 |
+
+** Informal Tables
+
+Tables without a caption will be formatted as informal tables in DocBook
+using element =<informaltable>=.  Such tables do not have a caption.
+See this example:
+
+| Item | Owner  |   Due Date | Status   |
+|------+--------+------------+----------|
+|    1 | Baoqiu | 2009-03-10 | Returned |
+|    2 | Scott  | 2009-03-20 | On Hold  |
+|    3 | John   | 2009-04-20 | Overdue  |
 
 * About Verses and Quotes
 
@@ -203,6 +220,9 @@ Here is an example:
 
 * About Drawers
 
+Drawers are something that people normally do not want to see.  So they
+should not appear in the DocBook output.  This is just to confirm that.
+
 ** This is a headline
    Still outside the drawer.
    :PROPERTIES:
@@ -217,6 +237,8 @@ text, and ~verbatim~ text.
 
 * About Lists
 
+** Itemized Lists
+
 This is paragraph one.  This is paragraph one.  This is paragraph one.
 This is paragraph one.  This is paragraph one.  This is paragraph one.
 This is paragraph one.  This is paragraph one.
@@ -230,6 +252,45 @@ This is an itemized list:
   - Item one.
 
   - Item two.
+
+** Ordered Lists
+
+This is an ordered list:
+
+  1. Number One.
+
+     Another paragraph for number one item.
+
+     Another another paragraph for number one item.
+
+  2. Number Two.
+
+** Definition Lists
+
+This is a variable list (a.k.a. Variable Lists in DocBook):
+  
+  - Term One :: Term 1 definition.  Term 1 definition.  Term 1
+                definition.  Term 1 definition.  Term 1 definition.
+                Term 1 definition.  Term 1 definition.
+
+  - Term Two :: Term 2 definition.  Term 2 definition.  Term 2
+                definition.  Term 2 definition.  Term 2 definition.
+                Term 2 definition.  Term 2 definition.  Term 2
+                definition.  Term 2 definition.
+
+** Check List
+
+This is a check list:
+
+  - [-] Check boxes [2/3]
+
+    - [X] Check box 1
+
+    - [ ] Check box 2
+
+    - [X] Check box 3
+
+** Nested Lists with Different List Types
 
 This is a 3-level nested list:
 
@@ -253,39 +314,6 @@ This is a 3-level nested list:
                   3. Description three.
 
   - Item two.
-
-
-This is an ordered list:
-
-  1. Number One.
-
-     Another paragraph for number one item.
-
-     Another another paragraph for number one item.
-
-  2. Number Two.
-
-
-This is a another variable list:
-  
-  - Term One :: Term 1 definition.  Term 1 definition.  Term 1
-                definition.  Term 1 definition.  Term 1 definition.
-                Term 1 definition.  Term 1 definition.
-
-  - Term Two :: Term 2 definition.  Term 2 definition.  Term 2
-                definition.  Term 2 definition.  Term 2 definition.
-                Term 2 definition.  Term 2 definition.  Term 2
-                definition.  Term 2 definition.
-
-This is a check list:
-
-  - [-] Check boxes [2/3]
-
-    - [X] Check box 1
-
-    - [ ] Check box 2
-
-    - [X] Check box 3
 
 * Random Pieces
 
