@@ -19,6 +19,11 @@ README
 org-docbook.el
     The main part of DocBook exporter code.
 
+org-exp-modified.el
+    Modified version of org-exp.el based on the code in development
+    version of Org-mode.  (A little more changes were added after
+    Carsten made some initial changes in org-exp.el.)
+
 test.org
     An Org file used for testing.  It includes all the features that
     current version of DocBook exporter supports.
