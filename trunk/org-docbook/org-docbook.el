@@ -783,7 +783,8 @@ publishing directory."
                     table-buffer (nreverse table-buffer)
                     table-orig-buffer (nreverse table-orig-buffer))
               (org-export-docbook-close-para-maybe)
-              (insert (org-format-table-html table-buffer table-orig-buffer))))
+              (insert (org-export-docbook-finalize-table 
+                       (org-format-table-html table-buffer table-orig-buffer)))))
 	   (t
 	    ;; Normal lines
 	    (when (string-match
@@ -1098,6 +1099,19 @@ If there are links in the string, don't modify these."
   (while (re-search-forward "\n\\(\\\\par\\>\\)" nil t)
     (if (not (get-text-property (match-beginning 1) 'org-protected))
         (replace-match ""))))
+
+(defun org-export-docbook-finalize-table (table)
+  "Change table to informaltable if caption does not exist."
+  (if (string-match
+       "^<table \\(\\(.\\|\n\\)+\\)<caption></caption>\n\\(\\(.\\|\n\\)+\\)</table>"
+       table)
+      (replace-match (concat "<informaltable "
+                             (match-string 1 table)
+                             (match-string 3 table)
+                             "</informaltable>")
+                     nil nil table)
+    table))
+  
 
 (provide 'org-docbook)
 
