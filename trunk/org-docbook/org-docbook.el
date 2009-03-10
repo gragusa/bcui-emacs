@@ -34,7 +34,7 @@
 ;; Code prototype was also started with `org-export-as-html'.
 ;;
 ;; Put this file into your load-path and the following into your ~/.emacs:
-;;   (require 'org-export-docbook)
+;;   (require 'org-docbook)
 ;;
 ;; The interactive functions are similar to those of the HTML exporter:
 ;;
@@ -638,12 +638,8 @@ publishing directory."
               (setq rpl (format "<link xlink:href=\"%s\">%s</link>"
                                 link desc)))
 	     ((string= type "coderef")
-
-	      (setq rpl (format "<a href=\"#coderef-%s\" class=\"coderef\" onmouseover=\"CodeHighlightOn(this, 'coderef-%s');\" onmouseout=\"CodeHighlightOff(this, 'coderef-%s');\">%s</a>"
-				path path path
-				(format (org-export-get-coderef-format path (and descp desc))
-					(cdr (assoc path org-export-code-refs))))))
-
+              (setq rpl (format (org-export-get-coderef-format path (and descp desc))
+                                (cdr (assoc path org-export-code-refs)))))
 	     ((functionp (setq fnc (nth 2 (assoc type org-link-protocols))))
 	      ;; The link protocol has a function for format the link
 	      (setq rpl
@@ -1103,6 +1099,6 @@ If there are links in the string, don't modify these."
     (if (not (get-text-property (match-beginning 1) 'org-protected))
         (replace-match ""))))
 
-(provide 'org-export-docbook)
+(provide 'org-docbook)
 
-;;; org-export-docbook.el ends here
+;;; org-docbook.el ends here

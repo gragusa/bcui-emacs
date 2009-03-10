@@ -311,3 +311,29 @@ This is a check list:
 \par and it is long, and it is long, and it is long, and it is long,
 \par and it is long, and it is long, and it is long, and it is long,
 \par and it is long, and it is long, and it is long.... Stop here!
+
+* About Code Reference Labels
+
+The following is a two-line program listing.  Since options "=-n -r="
+are specified, we display the line numbers but remove the code reference
+labels.
+
+#+BEGIN_SRC emacs-lisp -n -r
+(save-excursion                  (ref:sc)
+   (goto-char (point-min))       (ref:jump)
+#+END_SRC
+In line [[(sc)]] we remember the current positon.  [[(jump)][Line (jump)]]
+jumps to point-min.
+
+The following listing continues from the previous one (option "=+n=" is
+specified).  Since option "=-r=" does not exist, code reference labels
+are /not/ removed:
+
+#+BEGIN_SRC emacs-lisp +n
+(defgroup org-export-docbook nil
+  "Options for exporting Org-mode files to DocBook."  (ref:doc)
+  :tag "Org Export DocBook"                           (ref:tag)
+  :group 'org-export)
+#+END_SRC
+
+Line [[(doc)]] is the group documentation, and line [[(tag)]] is the group tag.
