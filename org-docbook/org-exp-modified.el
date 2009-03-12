@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.24a
+;; Version: 6.24b
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -4689,7 +4689,7 @@ The regexp returned will match the entire expression including the
 delimiters.  It will also define a single group which contains the
 match except for the outermost delimiters.  The maximum depth of
 stacked delimiters is N.  Escaping delimiters is not possible."
-  (let* ((nothing (concat "[^" "\\" left "\\" right "]*?"))
+  (let* ((nothing (concat "[^" left right "]*?"))
 	 (or "\\|")
 	 (re nothing)
 	 (next (concat "\\(?:" nothing left nothing right "\\)+" nothing)))
