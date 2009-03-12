@@ -1016,8 +1016,7 @@ If there are links in the string, don't modify these."
   (if org-export-with-special-strings
       (setq s (org-export-docbook-convert-special-strings s)))
   (if org-export-with-sub-superscripts
-      ;; FIXME html ???
-      (setq s (org-export-html-convert-sub-super s)))
+      (setq s (org-export-convert-sub-super s 'docbook)))
   (if org-export-with-TeX-macros
       (let ((start 0) wd ass)
 	(while (setq start (string-match "\\\\\\([a-zA-Z]+\\)\\({}\\)?"
@@ -1112,7 +1111,6 @@ If there are links in the string, don't modify these."
                      nil nil table)
     table))
   
-
 (provide 'org-docbook)
 
 ;;; org-docbook.el ends here

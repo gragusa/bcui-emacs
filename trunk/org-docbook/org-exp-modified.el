@@ -4666,7 +4666,7 @@ If there are links in the string, don't modify these."
   (if org-export-with-special-strings
       (setq s (org-export-html-convert-special-strings s)))
   (if org-export-with-sub-superscripts
-      (setq s (org-export-html-convert-sub-super s)))
+      (setq s (org-export-convert-sub-super s 'html)))
   (if org-export-with-TeX-macros
       (let ((start 0) wd ass)
 	(while (setq start (string-match "\\\\\\([a-zA-Z]+\\)\\({}\\)?"
@@ -4735,9 +4735,16 @@ stacked delimiters is N.  Escaping delimiters is not possible."
 	  (setq string (replace-match rpl t nil string)))))
     string))
 
-(defun org-export-html-convert-sub-super (string)
-  "Convert sub- and superscripts in STRING to HTML."
-  (let (key c (s 0) (requireb (eq org-export-with-sub-superscripts '{})))
+(defun org-export-convert-sub-super (string backend)
+  "Convert sub- and superscripts in STRING for different export backends."
+  (let (key
+        c
+        (s 0)
+        (requireb (eq org-export-with-sub-superscripts '{}))
+        (sub-key (cond ((eq backend 'html) "sub")
+                       ((eq backend 'docbook) "subscript")))
+        (super-key (cond ((eq backend 'html) "sup")
+                         ((eq backend 'docbook) "superscript"))))
     (while (string-match org-match-substring-regexp string s)
       (cond
        ((and requireb (match-end 8)) (setq s (match-end 2)))
@@ -4745,7 +4752,7 @@ stacked delimiters is N.  Escaping delimiters is not possible."
 	(setq s (match-end 2)))
        (t
 	(setq s (match-end 1)
-	      key (if (string= (match-string 2 string) "_") "sub" "sup")
+	      key (if (string= (match-string 2 string) "_") sub-key super-key)
 	      c (or (match-string 8 string)
 		    (match-string 6 string)
 		    (match-string 5 string))
