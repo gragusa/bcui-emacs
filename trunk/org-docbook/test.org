@@ -365,3 +365,33 @@ are /not/ removed:
 #+END_SRC
 
 Line [[(doc)]] is the group documentation, and line [[(tag)]] is the group tag.
+
+* About Subscripts and Superscripts
+
+"=E = mc^{2}=" is exported as E = mc^{2}.
+
+x_{1}^{2} + x_{2}^{2} = y^{2}
+
+x_1^2 + x_2^2 = y^2
+
+* About Quoting DocBook Code
+
+An Org file can quote DocBook XML code using one of the following
+constructs:
+
+:    #+DOCBOOK: Literal DocBook code for export
+
+or
+
+:   #+BEGIN_DOCBOOK
+:   All lines between these markers are exported literally.
+:   #+END_DOCBOOK
+
+Here are two examples:
+
+#+DOCBOOK: <para><emphasis>One line</emphasis> written in DocBook</para>
+
+#+BEGIN_DOCBOOK
+<para> Another paragraph written in DocBook XML code: E =
+mc<superscript>2</superscript>.</para>
+#+END_DOCBOOK
