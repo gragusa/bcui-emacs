@@ -250,7 +250,7 @@ publishing directory."
 			       ext-plist
 			       (org-infile-export-plist))))
 	 (link-validate (plist-get opt-plist :link-validation-function))
-	 valid thetoc have-headings first-heading-pos
+	 valid
 	 (odd org-odd-levels-only)
 	 (region-p (org-region-active-p))
 	 (rbeg (and region-p (region-beginning)))
@@ -448,7 +448,7 @@ publishing directory."
       </personname>
       %s
     </author>
-  </info>"
+  </info>\n"
                  (org-docbook-expand title)
                  firstname othername surname
                  (if email (concat "<email>" email "</email>") "")
@@ -539,7 +539,7 @@ publishing directory."
           ;; End of block quotes
 	  (when (equal "ORG-BLOCKQUOTE-END" line)
             (org-export-docbook-close-para-maybe)
-	    (insert "\n</blockquote>\n")
+	    (insert "</blockquote>\n")
 	    (throw 'nextline nil))
 
           ;; End of verses
@@ -755,7 +755,6 @@ publishing directory."
 		(pop local-list-type))
 	      (setq local-list-indent nil
 		    in-local-list nil))
-	    (setq first-heading-pos (or first-heading-pos (point)))
 	    (org-export-docbook-level-start level txt)
 	    ;; QUOTES
 	    (when (string-match quote-re line)
@@ -945,7 +944,7 @@ publishing directory."
 (defun org-export-docbook-close-para-maybe ()
   "Close DocBook paragraph if there is one open."
   (when org-docbook-para-open
-    (insert "</para>")
+    (insert "</para>\n")
     (setq org-docbook-para-open nil)))
 
 (defun org-export-docbook-close-li (&optional type)
