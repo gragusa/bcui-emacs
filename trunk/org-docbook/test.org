@@ -191,6 +191,20 @@ suited for source code and similar examples.
     The following line should not be regarded as the continuation of a long
     footnote: 
 \par This is NOT part of a footnote.
+
+    The following empty DocBook paragraph has property 'org-protected,
+    and thus should NOT be removed during the final cleanup time.
+
+    <para>
+    </para>
+
+    The following empty section is also protected, so should NOT be
+    filled with an empty paragraph ("<para></para>") by DocBook
+    exporter:
+
+    <section xml:id="sec-2.1.1">
+    <title>Empty Subsection x.1.1 </title>
+    </section>
 #+END_EXAMPLE
 
 For simplicity when using small examples, you can also start the
@@ -232,8 +246,14 @@ should not appear in the DocBook output.  This is just to confirm that.
 
 * About Typesetting
 
-This is _underlined_, and *emphasize*, and =verbatim=, and /italic/
-text, and ~verbatim~ text.
+The following markups are supported in Org-mode: _underline_,
+*emphasize*, =code=, /italic/, ~verbatim~, +strike-through+.
+
+More examples:
+
+  - =[!#&*+-/:;<=>?]=
+
+  - =[\t\n\r ,]=
 
 * About Lists
 
