@@ -1096,7 +1096,7 @@ If there are links in the string, don't modify these."
         (if (not (string-match (car tmp) attr))
             (setq attr (concat attr " " (car tmp) "=" (cdr tmp)))))
       (format "%s<mediaobject>
-<imageobject>\n<imagedata fileref=\"%s\"%s/>\n</imageobject>
+<imageobject>\n<imagedata fileref=\"%s\" %s/>\n</imageobject>
 %s
 </mediaobject>\n%s"
               (if org-docbook-para-open "</para>\n" "")
