@@ -486,7 +486,7 @@ publishing directory."
 	    (when (not infixed)
 	      (setq infixed t)
 	      (org-export-docbook-close-para-maybe)
-	      (insert "<programlisting><![CDATA[\n"))
+	      (insert "<programlisting><![CDATA["))
 	    (insert (match-string 3 line) "\n")
 	    (when (or (not lines)
 		      (not (string-match "^[ \t]*\\(:.*\\)"
@@ -770,7 +770,7 @@ publishing directory."
 	    ;; QUOTES
 	    (when (string-match quote-re line)
 	      (org-export-docbook-close-para-maybe)
-	      (insert "<programlisting><![CDATA[\n")
+	      (insert "<programlisting><![CDATA[")
 	      (setq inquote t)))
 
            ;; Tables: since version 4.3 of DocBook DTD, HTML tables are
