@@ -116,6 +116,15 @@ conversions."
   :group 'org-export-docbook
   :type 'alist)
 
+(defcustom org-export-docbook-default-image-attributes
+  `(("align" . "\"center\"")
+    ("valign". "\"middle\""))
+  "Alist of default DocBook image attributes.  These attributes
+will be inserted into element <imagedata> by default, but users
+can override them using `#+ATTR_DocBook:'."
+  :group 'org-export-docbook
+  :type 'alist)
+
 (defcustom org-export-docbook-inline-image-extensions
   '("jpeg" "jpg" "png" "svg")
   "Extensions of image files that can be inlined into DocBook."
@@ -1078,14 +1087,20 @@ If there are links in the string, don't modify these."
   "Create image element in DocBook."
   (save-match-data
     (let* ((caption (org-find-text-property-in-string 'org-caption src))
-           (attr (org-find-text-property-in-string 'org-attributes src))
-           (label (org-find-text-property-in-string 'org-label src)))
+           (attr (or (org-find-text-property-in-string 'org-attributes src)
+                     ""))
+           (label (org-find-text-property-in-string 'org-label src))
+           (default-attr org-export-docbook-default-image-attributes)
+           tmp)
+      (while (setq tmp (pop default-attr))
+        (if (not (string-match (car tmp) attr))
+            (setq attr (concat attr " " (car tmp) "=" (cdr tmp)))))
       (format "%s<mediaobject>
-<imageobject>\n<imagedata fileref=\"%s\" align=\"center\"/>\n</imageobject>
+<imageobject>\n<imagedata fileref=\"%s\"%s/>\n</imageobject>
 %s
 </mediaobject>\n%s"
               (if org-docbook-para-open "</para>\n" "")
-              src
+              src attr
               (if caption
                   (concat "<caption>\n<para>"
                           caption
