@@ -2487,7 +2487,7 @@ Numbering lines works for all three major backends (html, latex, and ascii)."
        ((eq backend 'docbook)
 	(setq rtn (org-export-number-lines rtn 'docbook 0 0 num cont rpllbl fmt))
         (concat "\n#+BEGIN_DOCBOOK\n"
-                (org-add-props (concat "<programlisting><![CDATA[\n"
+                (org-add-props (concat "<programlisting><![CDATA["
                                        rtn
                                        "]]>\n</programlisting>\n")
                     '(org-protected t))
