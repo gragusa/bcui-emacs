@@ -630,13 +630,15 @@ publishing directory."
 			     (concat type ":" path) org-docbook-para-open))
 		(setq link (concat type ":" path))
                 (setq rpl (format "<link xlink:href=\"%s\">%s</link>"
-                                  link desc))
+                                  (org-export-html-format-href link)
+                                  (org-export-html-format-href desc)))
                 ))
 	     ((member type '("ftp" "mailto" "news"))
 	      ;; Standard URL
 	      (setq link (concat type ":" path))
               (setq rpl (format "<link xlink:href=\"%s\">%s</link>"
-                                link desc)))
+                                (org-export-html-format-href link)
+                                (org-export-html-format-href desc))))
 	     ((string= type "coderef")
               (setq rpl (format (org-export-get-coderef-format path (and descp desc))
                                 (cdr (assoc path org-export-code-refs)))))

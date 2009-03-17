@@ -89,6 +89,8 @@ This is an http link: [[http://www.cnn.com][CNN Web Site]].
 
 This is another one: [[http://www.cnn.com]].
 
+An http link with special characters: http://www.cnn.com/xx=5&yy=6&zz=7
+
 FTP link: [[ftp://ftp.gnu.org/path][One Gnu FTP Link]].
 
 FTP link: [[ftp://ftp.gnu.org/path/to/something]].
