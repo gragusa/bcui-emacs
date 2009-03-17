@@ -104,9 +104,9 @@ avoid same set of footnote IDs being used multiple times."
   `(("*" "<emphasis role=\"bold\">" "</emphasis>")
     ("/" "<emphasis>" "</emphasis>")
     ("_" "<emphasis role=\"underline\">" "</emphasis>")
-    ("=" "<literal>" "</literal>")
+    ("=" "<code>" "</code>")
     ("~" "<literal>" "</literal>")
-    ("+" "<literal>" "</literal>"))
+    ("+" "<emphasis role=\"strikethrough\">" "</emphasis>"))
   "Alist of DocBook expressions to convert emphasis fontifiers.
 Each element of the list is a list of three elements.
 The first element is the character used as a marker for fontification.
@@ -914,15 +914,17 @@ publishing directory."
       ;; newline.
       (goto-char (point-min))
       (while (re-search-forward
-              "[ \r\n\t]*<para>[ \r\n\t]*</para>[ \r\n\t]*" nil t)
-	(replace-match "\n")
-        (backward-char 1))
+              "[ \r\n\t]*\\(<para>\\)[ \r\n\t]*</para>[ \r\n\t]*" nil t)
+        (when (not (get-text-property (match-beginning 1) 'org-protected))
+          (replace-match "\n")
+          (backward-char 1)))
       ;; Fill empty sections with <para></para>.  This is to make sure
       ;; that the DocBook document generated is valid and well-formed.
       (goto-char (point-min))
       (while (re-search-forward
               "</title>\\([ \r\n\t]*\\)</section>" nil t)
-        (replace-match "\n<para></para>\n" nil nil nil 1))
+        (when (not (get-text-property (match-beginning 0) 'org-protected))
+          (replace-match "\n<para></para>\n" nil nil nil 1)))
       ;; Insert the last closing tag.
       (goto-char (point-max))
       (unless body-only
