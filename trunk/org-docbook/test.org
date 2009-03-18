@@ -91,6 +91,9 @@ This is another one: [[http://www.cnn.com]].
 
 An http link with special characters: http://www.cnn.com/xx=5&yy=6&zz=7
 
+Another link with superscript and other special characters in the link
+description: [[http://www.emc.com][EMC website (E = mc^2 > 0)]]
+
 FTP link: [[ftp://ftp.gnu.org/path][One Gnu FTP Link]].
 
 FTP link: [[ftp://ftp.gnu.org/path/to/something]].
