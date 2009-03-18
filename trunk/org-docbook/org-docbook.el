@@ -139,17 +139,15 @@ can override them using `#+ATTR_DocBook:'."
 
 ;;; Autoload functions:
 
-;; FIXME: Need to make sure this works!
 ;;;###autoload
 (defun org-export-as-docbook-batch ()
   "Call `org-export-as-docbook', may be used in batch processing.
 For example:
 
-emacs   --batch
+$ emacs --batch
         --load=$HOME/lib/emacs/org.el
-        --eval \"(setq org-export-headline-levels 2)\"
-        --visit=MyFile --funcall org-export-as-docbook-batch"
-  (org-export-as-docbook org-export-headline-levels 'hidden))
+        --visit=MyOrgFile.org --funcall org-export-as-docbook-batch"
+  (org-export-as-docbook 'hidden))
 
 ;;;###autoload
 (defun org-export-as-docbook-to-buffer ()
@@ -1080,7 +1078,7 @@ If there are links in the string, don't modify these."
 
 (defun org-export-docbook-get-footnotes (lines)
   "Given a list of LINES, return a list of alist footnotes."
-  (let ((list nil))
+  (let ((list nil) line)
     (while (setq line (pop lines))
       (if (string-match "^[ \t]*\\[\\([0-9]+\\)\\] \\(.+\\)" line)
           (push (cons (match-string 1 line) (match-string 2 line))
