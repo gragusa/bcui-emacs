@@ -618,7 +618,7 @@ publishing directory."
               (setq rpl (format "<link linkend=\"%s\">%s</link>"
                                 (org-solidify-link-text
                                  (save-match-data (org-link-unescape path)) nil)
-                                (org-export-html-format-desc desc))))
+                                (org-export-docbook-format-desc desc))))
 	     ((and (equal type "id")
 		   (setq id-file (org-id-find-id-file path)))
 	      ;; This is an id: link to another file (if it was the same file,
@@ -628,7 +628,7 @@ publishing directory."
 	      (setq id-file (concat (file-name-sans-extension id-file)
 				    org-export-docbook-extension))
               (setq rpl (format "<link xlink:href=\"%s#%s\">%s</link>"
-                                id-file path (org-export-html-format-desc desc))))
+                                id-file path (org-export-docbook-format-desc desc))))
 	     ((member type '("http" "https"))
 	      ;; Standard URL, just check if we need to inline an image
 	      (if (and (or (eq t org-export-docbook-inline-images)
@@ -640,14 +640,14 @@ publishing directory."
 		(setq link (concat type ":" path))
                 (setq rpl (format "<link xlink:href=\"%s\">%s</link>"
                                   (org-export-html-format-href link)
-                                  (org-export-html-format-href desc)))
+                                  (org-export-docbook-format-desc desc)))
                 ))
 	     ((member type '("ftp" "mailto" "news"))
 	      ;; Standard URL
 	      (setq link (concat type ":" path))
               (setq rpl (format "<link xlink:href=\"%s\">%s</link>"
                                 (org-export-html-format-href link)
-                                (org-export-html-format-href desc))))
+                                (org-export-docbook-format-desc desc))))
 	     ((string= type "coderef")
               (setq rpl (format (org-export-get-coderef-format path (and descp desc))
                                 (cdr (assoc path org-export-code-refs)))))
@@ -706,7 +706,7 @@ publishing directory."
 				(message "image %s %s" thefile org-docbook-para-open)
 				(org-export-docbook-format-image thefile org-docbook-para-open))
                             (format "<link xlink:href=\"%s\">%s</link>"
-                                    thefile (org-export-html-format-desc desc))))
+                                    thefile (org-export-docbook-format-desc desc))))
 		(if (not valid) (setq rpl desc))))
 
 	     (t
@@ -1043,6 +1043,10 @@ If there are links in the string, don't modify these."
 	      (setq start (+ start (length wd))))))))
   s)
 
+(defun org-export-docbook-format-desc (desc)
+  "Make sure DESC is valid as a description in a link."
+  (save-match-data
+    (org-docbook-do-expand desc)))
 
 (defun org-export-docbook-convert-emphasize (string)
   "Apply emphasis for DocBook exporting."
