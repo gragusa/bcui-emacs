@@ -1026,7 +1026,7 @@ If there are links in the string, don't modify these."
   (if org-export-with-special-strings
       (setq s (org-export-docbook-convert-special-strings s)))
   (if org-export-with-sub-superscripts
-      (setq s (org-export-convert-sub-super s 'docbook)))
+      (setq s (org-export-docbook-convert-sub-super s)))
   (if org-export-with-TeX-macros
       (let ((start 0) wd ass)
 	(while (setq start (string-match "\\\\\\([a-zA-Z]+\\)\\({}\\)?"
@@ -1131,6 +1131,32 @@ If there are links in the string, don't modify these."
                      nil nil table)
     table))
   
+;; Note: This function is very similar to
+;; org-export-html-convert-sub-super.  They can be merged in the future.
+(defun org-export-docbook-convert-sub-super (string)
+  "Convert sub- and superscripts in STRING for DocBook."
+  (let (key c (s 0) (requireb (eq org-export-with-sub-superscripts '{})))
+    (while (string-match org-match-substring-regexp string s)
+      (cond
+       ((and requireb (match-end 8)) (setq s (match-end 2)))
+       ((get-text-property  (match-beginning 2) 'org-protected string)
+	(setq s (match-end 2)))
+       (t
+	(setq s (match-end 1)
+	      key (if (string= (match-string 2 string) "_")
+                      "subscript"
+                    "superscript")
+	      c (or (match-string 8 string)
+		    (match-string 6 string)
+		    (match-string 5 string))
+	      string (replace-match
+		      (concat (match-string 1 string)
+			      "<" key ">" c "</" key ">")
+		      t t string)))))
+    (while (string-match "\\\\\\([_^]\\)" string)
+      (setq string (replace-match (match-string 1 string) t t string)))
+    string))
+
 (provide 'org-docbook)
 
 ;;; org-docbook.el ends here
