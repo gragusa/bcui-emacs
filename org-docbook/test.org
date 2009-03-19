@@ -56,13 +56,18 @@ Org file.
 #+CAPTION: Org-mode Logo (Unicorn) in SVG Format (width="3in")
 #+LABEL:   fig:unicorn-svg
 #+ATTR_DocBook: width="3in"
-[[~//Org/org-mode-unicorn.svg]]
-
+[[~/Org/org-mode-unicorn.svg]]
 
 In Org-mode, an image file can be used as the description of a link, and
 the image is exported as a click-able image in HTML export.  In DocBook
 format, the image file path is formatted as it is.  See the following
 link: [[file:///Users/bcui/Downloads/tdg5/en/html/docbook.html][file:/Users/bcui/Org/docbook-cover.png]]
+
+** Inline Images in Tables
+
+| Image One     | Image Two                  |
+|---------------+----------------------------|
+| [[~/Org/GNU.png]] | [[~/Org/org-mode-unicorn.svg]] |
 
 * About Timestamps, TODOs, and Tags
 
