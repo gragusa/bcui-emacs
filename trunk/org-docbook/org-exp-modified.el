@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.24b
+;; Version: 6.24trans
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -793,10 +793,18 @@ to a file."
 
 (defcustom org-export-htmlize-output-type 'inline-css
   "Output type to be used by htmlize when formatting code snippets.
-Normally this is `inline-css', but if you have defined to appropriate
-classes in your css style file, setting this to `css' means that the
-fontification will use the class names.
-See also the function `org-export-htmlize-generate-css'."
+We use as default  `inline-css', in order to make the resulting
+HTML self-containing.
+However, this will fail when using Emacs in batch mode for export, because
+then no rich font definitions are in place.  It will also not be good if
+people with different Emacs setup contribute HTML files to a website,
+because the fonts will represent the individual setups.  In these cases,
+it is much better to let Org/Htmlize assign classes only, and to use
+a style file to define the look of these classes.
+To get a start for your css file, start Emacs session nnd make sure that
+all the faces you are interested in are defined, for example by loading files
+in all modes you want.  Then, use the command
+\\[org-export-htmlize-generate-css] to extract class definitions."
   :group 'org-export-htmlize
   :type '(choice (const css) (const inline-css)))
 
@@ -1648,8 +1656,8 @@ on this string to produce the exported version."
       ;; Protect verbatim elements
       (org-export-protect-verbatim)
 
-      ;; Blockquotes and verse
-      (org-export-mark-blockquote-and-verse)
+      ;; Blockquotes, verse, and center
+      (org-export-mark-blockquote-verse-center)
 
       ;; Remove timestamps, if the user has requested so
       (unless (plist-get parameters :timestamps)
@@ -1794,6 +1802,9 @@ the current file."
 	    found props pos cref
 	    (target
 	     (cond
+	      ((= (string-to-char link) ?#)
+	       ;; user wants exactly this link
+	       link)
 	      ((cdr (assoc slink target-alist)))
 	      ((and (string-match "^id:" link)
 		    (cdr (assoc (substring link 3) target-alist))))
@@ -2016,7 +2027,7 @@ from the buffer."
 	  ;; No, this is for a different backend, kill it
 	  (delete-region (match-beginning 0) (match-end 0)))))))
 
-(defun org-export-mark-blockquote-and-verse ()
+(defun org-export-mark-blockquote-verse-center ()
   "Mark block quote and verse environments with special cookies.
 These special cookies will later be interpreted by the backend."
   ;; Blockquotes
@@ -2031,6 +2042,12 @@ These special cookies will later be interpreted by the backend."
   (while (re-search-forward "^#\\+\\(begin\\|end\\)_verse\\>.*" nil t)
     (replace-match (if (equal (downcase (match-string 1)) "end")
 		       "ORG-VERSE-END" "ORG-VERSE-START")
+		   t t))
+  ;; Center
+  (goto-char (point-min))
+  (while (re-search-forward "^#\\+\\(begin\\|end\\)_center\\>.*" nil t)
+    (replace-match (if (equal (downcase (match-string 1)) "end")
+		       "ORG-CENTER-END" "ORG-CENTER-START")
 		   t t)))
 
 (defun org-export-attach-captions-and-attributes (backend target-alist)
@@ -2891,6 +2908,8 @@ underlined headlines.  The default is 3."
 		   (org-format-table-ascii table-buffer)
 		   "\n") "\n")))
        (t
+	(if (string-match "^\\([ \t]*\\)\\([-+*][ \t]+\\)\\(.*?\\)\\( ::\\)" line)
+	    (setq line (replace-match "\\1\\3:" t nil line)))
 	(setq line (org-fix-indentation line org-ascii-current-indentation))
 	;; Remove forced line breaks
 	(if (string-match "\\\\\\\\[ \t]*$" line)
@@ -3700,7 +3719,7 @@ lang=\"%s\" xml:lang=\"%s\">
 	      (insert "\n<hr/>\n"))
 	    (throw 'nextline nil))
 
-	  ;; Blockquotes and verse
+	  ;; Blockquotes, verse, and center
 	  (when (equal "ORG-BLOCKQUOTE-START" line)
 	    (org-close-par-maybe)
 	    (insert "<blockquote>\n<p>\n")
@@ -3716,6 +3735,13 @@ lang=\"%s\" xml:lang=\"%s\">
 	  (when (equal "ORG-VERSE-END" line)
 	    (insert "</p>\n")
 	    (setq inverse nil)
+	    (throw 'nextline nil))
+	  (when (equal "ORG-CENTER-START" line)
+	    (org-close-par-maybe)
+	    (insert "\n<p style=\"text-align: center\">\n")
+	    (throw 'nextline nil))
+	  (when (equal "ORG-CENTER-END" line)
+	    (insert "</p>\n")
 	    (throw 'nextline nil))
 	  (when inverse
 	    (let ((i (org-get-string-indentation line)))
@@ -3789,7 +3815,8 @@ lang=\"%s\" xml:lang=\"%s\">
 	     ((equal type "internal")
 	      (setq rpl
 		    (concat
-		     "<a href=\"#"
+		     "<a href=\""
+		     (if (= (string-to-char path) ?#) "" "#")
 		     (org-solidify-link-text
 		      (save-match-data (org-link-unescape path)) nil)
 		     "\"" attr ">"
@@ -4666,7 +4693,7 @@ If there are links in the string, don't modify these."
   (if org-export-with-special-strings
       (setq s (org-export-html-convert-special-strings s)))
   (if org-export-with-sub-superscripts
-      (setq s (org-export-convert-sub-super s 'html)))
+      (setq s (org-export-html-convert-sub-super s)))
   (if org-export-with-TeX-macros
       (let ((start 0) wd ass)
 	(while (setq start (string-match "\\\\\\([a-zA-Z]+\\)\\({}\\)?"
@@ -4735,16 +4762,9 @@ stacked delimiters is N.  Escaping delimiters is not possible."
 	  (setq string (replace-match rpl t nil string)))))
     string))
 
-(defun org-export-convert-sub-super (string backend)
-  "Convert sub- and superscripts in STRING for different export backends."
-  (let (key
-        c
-        (s 0)
-        (requireb (eq org-export-with-sub-superscripts '{}))
-        (sub-key (cond ((eq backend 'html) "sub")
-                       ((eq backend 'docbook) "subscript")))
-        (super-key (cond ((eq backend 'html) "sup")
-                         ((eq backend 'docbook) "superscript"))))
+(defun org-export-html-convert-sub-super (string)
+  "Convert sub- and superscripts in STRING to HTML."
+  (let (key c (s 0) (requireb (eq org-export-with-sub-superscripts '{})))
     (while (string-match org-match-substring-regexp string s)
       (cond
        ((and requireb (match-end 8)) (setq s (match-end 2)))
@@ -4752,7 +4772,7 @@ stacked delimiters is N.  Escaping delimiters is not possible."
 	(setq s (match-end 2)))
        (t
 	(setq s (match-end 1)
-	      key (if (string= (match-string 2 string) "_") sub-key super-key)
+	      key (if (string= (match-string 2 string) "_") "sub" "sup")
 	      c (or (match-string 8 string)
 		    (match-string 6 string)
 		    (match-string 5 string))
