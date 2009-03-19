@@ -555,6 +555,23 @@ publishing directory."
 	    (setq inverse nil)
 	    (throw 'nextline nil))
 
+          ;; Text centering.  Element <para role="centered"> does not
+          ;; seem to work with FOP, so for now we use <informaltable> to
+          ;; center the text, which can contain multiple paragraphs.
+          (when (equal "ORG-CENTER-START" line)
+            (org-export-docbook-close-para-maybe)
+            (insert "<informaltable frame=\"none\" colsep=\"0\" rowsep=\"0\">\n"
+                    "<tgroup align=\"center\" cols=\"1\">\n"
+                    "<tbody><row><entry>\n")
+            (org-export-docbook-open-para)
+	    (throw 'nextline nil))
+
+          (when (equal "ORG-CENTER-END" line)
+            (org-export-docbook-close-para-maybe)
+            (insert "</entry></row></tbody>\n"
+                    "</tgroup>\n</informaltable>\n")
+	    (throw 'nextline nil))
+
 	  ;; Make targets to anchors.  Note that currently FOP does not
           ;; seem to support <anchor> tags when generating PDF output,
           ;; but this can be used in DocBook --> HTML conversion.
@@ -893,6 +910,13 @@ publishing directory."
 	      (when (string-match "^[ \t]*\\[\\([0-9]+\\)\\]" line)
 		(org-export-docbook-close-para-maybe)
                 (throw 'nextline nil)))
+
+            ;; FIXME: It might be a good idea to add an option to
+            ;; support link break processing instruction <?linebreak?>.
+            ;; Org-mode supports line break "\\" in HTML exporter, and
+            ;; some DocBook users may also want to force line breaks
+            ;; even though DocBook only supports that in
+            ;; <literallayout>.
 
 	    (insert line "\n")))))
 

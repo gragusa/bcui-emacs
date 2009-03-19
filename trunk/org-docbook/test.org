@@ -47,6 +47,18 @@ Here is an image with caption and label:
 #+LABEL:   fig:gnu-png
 [[~/Org/GNU.png]]
 
+You can also add attributes to element =<imagedata>= via
+=#+ATTR_DocBook:= line to control how an image is displayed.  You can
+customize variable =org-export-docbook-default-image-attributes= to set
+the default attributes that you want to append to all the images in your
+Org file.
+
+#+CAPTION: Org-mode Logo (Unicorn) in SVG Format (width="3in")
+#+LABEL:   fig:unicorn-svg
+#+ATTR_DocBook: width="3in"
+[[~//Org/org-mode-unicorn.svg]]
+
+
 In Org-mode, an image file can be used as the description of a link, and
 the image is exported as a click-able image in HTML export.  In DocBook
 format, the image file path is formatted as it is.  See the following
@@ -412,7 +424,8 @@ or
 :    All lines between these markers are exported literally.
 :    #+END_DOCBOOK
 
-Here are three examples:
+Here are three examples (notice that the last one is a *warning*
+admonition in DocBook, something that Org-mode does not provide):
 
 #+DOCBOOK: <para><emphasis>One line</emphasis> written in DocBook</para>
 
@@ -428,3 +441,19 @@ mc<superscript>2</superscript>.</para>
   DocBook exporter if you are not careful!</para>
 </warning>
 #+END_DOCBOOK
+
+* About Text Centering
+
+=#+BEGIN_CENTER= ... =#+END_CENTER= is a newly added feature in Org-mode
+6.24trans to support text centering.  This feature is currently
+supported via =<informaltable>= (with one row and one column) in DocBook
+exporter.  Element ~<para role="centered">~ does not seem to work well
+with FOP.
+
+#+BEGIN_CENTER
+Everything should be made as simple as possible, but not any simpler.
+
+Repeat the above paragraph:
+
+Everything should be made as simple as possible, but not any simpler.
+#+END_CENTER
