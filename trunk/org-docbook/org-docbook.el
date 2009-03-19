@@ -651,7 +651,7 @@ publishing directory."
 		       (org-file-image-p
 			path org-export-docbook-inline-image-extensions))
 		  (setq rpl (org-export-docbook-format-image
-			     (concat type ":" path) org-docbook-para-open))
+			     (concat type ":" path)))
 		(setq link (concat type ":" path))
                 (setq rpl (format "<link xlink:href=\"%s\">%s</link>"
                                   (org-export-html-format-href link)
@@ -719,7 +719,7 @@ publishing directory."
 					    (not descp))))
 			      (progn
 				(message "image %s %s" thefile org-docbook-para-open)
-				(org-export-docbook-format-image thefile org-docbook-para-open))
+				(org-export-docbook-format-image thefile))
                             (format "<link xlink:href=\"%s\">%s</link>"
                                     thefile (org-export-docbook-format-desc desc))))
 		(if (not valid) (setq rpl desc))))
@@ -1109,7 +1109,7 @@ If there are links in the string, don't modify these."
                 list)))
     list))
 
-(defun org-export-docbook-format-image (src par-open)
+(defun org-export-docbook-format-image (src)
   "Create image element in DocBook."
   (save-match-data
     (let* ((caption (org-find-text-property-in-string 'org-caption src))
@@ -1121,18 +1121,16 @@ If there are links in the string, don't modify these."
       (while (setq tmp (pop default-attr))
         (if (not (string-match (car tmp) attr))
             (setq attr (concat attr " " (car tmp) "=" (cdr tmp)))))
-      (format "%s<mediaobject>
+      (format "<mediaobject>
 <imageobject>\n<imagedata fileref=\"%s\" %s/>\n</imageobject>
-%s
-</mediaobject>\n%s"
-              (if org-docbook-para-open "</para>\n" "")
+%s</mediaobject>"
               src attr
               (if caption
                   (concat "<caption>\n<para>"
                           caption
-                          "</para>\n</caption>")
+                          "</para>\n</caption>\n")
                 "")
-              (if org-docbook-para-open "<para>" "")))))
+              ))))
 
 (defun org-export-docbook-preprocess (parameters)
   "Extra preprocessing work for DocBook export."
