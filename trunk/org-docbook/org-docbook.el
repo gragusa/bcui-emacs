@@ -927,7 +927,7 @@ publishing directory."
                 (throw 'nextline nil)))
 
             ;; FIXME: It might be a good idea to add an option to
-            ;; support link break processing instruction <?linebreak?>.
+            ;; support line break processing instruction <?linebreak?>.
             ;; Org-mode supports line break "\\" in HTML exporter, and
             ;; some DocBook users may also want to force line breaks
             ;; even though DocBook only supports that in
