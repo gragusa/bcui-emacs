@@ -462,3 +462,30 @@ Repeat the above paragraph:
 
 Everything should be made as simple as possible, but not any simpler.
 #+END_CENTER
+
+* Special Characters
+
+Special characters that are written in TeX-like syntax, such as =\alpha=
+(\alpha), =\Gamma= (\Gamma), =\Zeta= (\Zeta), and =\sigma= (\sigma), are
+supported by DocBook exporter.  These characters are rewritten to HTML
+entities like =&alpha;=, =&Gamma;=, =&Zeta;=, and =&sigma;=, so as long
+as the DocBook XML file includes the right entities, these special
+characters are recognized correctly.
+
+You can customize variable =org-export-docbook-doctype= to include the
+entities you need.  By default, this variable contains the following
+value:
+
+:     "<!DOCTYPE article [
+:     <!ENTITY % xhtml1-symbol PUBLIC
+:     \"-//W3C//ENTITIES Symbol for HTML//EN//XML\"
+:     \"http://www.w3.org/2003/entities/2007/xhtml1-symbol.ent\"
+:     >
+:     %xhtml1-symbol;
+:     ]>
+:     "
+
+For example, the following line in an Org file will generate this:
+\alpha \le \sum 2^{\beta^{\gamma}} + \delta
+
+:     \alpha \le \sum 2^{\beta^{\gamma}} + \delta
