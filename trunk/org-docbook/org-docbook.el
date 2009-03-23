@@ -33,16 +33,40 @@
 ;; idea and design is very similar to what `org-export-as-html' has.
 ;; Code prototype was also started with `org-export-as-html'.
 ;;
-;; Put this file into your load-path and the following into your ~/.emacs:
+;; Put this file into your load-path and the following line into your
+;; ~/.emacs:
+;;
 ;;   (require 'org-docbook)
 ;;
-;; The interactive functions are similar to those of the HTML exporter:
+;; The interactive functions are similar to those of the HTML and LaTeX
+;; exporters:
 ;;
 ;; M-x `org-export-as-docbook'
+;; M-x `org-export-as-docbook-pdf'
+;; M-x `org-export-as-docbook-pdf-and-open'
 ;; M-x `org-export-as-docbook-batch'
 ;; M-x `org-export-as-docbook-to-buffer'
 ;; M-x `org-export-region-as-docbook'
 ;; M-x `org-replace-region-by-docbook'
+;;
+;; Note that, in order to generate PDF files using the DocBook XML files
+;; created by DocBook exporter, the following two variables have to be
+;; set based on what DocBook tools you use for XSLT processor and XSL-FO
+;; processor:
+;;
+;;   org-export-docbook-xslt-proc-command
+;;   org-export-docbook-xsl-fo-proc-command
+;;
+;; Check the document of these two variables to see examples of how they
+;; can be set.
+;;
+;; If the Org file to be exported contains special characters written in
+;; TeX-like syntax, like \alpha and \beta, you need to include the right
+;; entity file(s) in the DOCTYPE declaration for the DocBook XML file.
+;; This is required to make the DocBook XML file valid.  The DOCTYPE
+;; declaration string can be set using the following variable:
+;;
+;;   org-export-docbook-doctype
 ;;
 ;;; Code:
 
@@ -55,7 +79,9 @@
 
 ;;; Variables:
 
-(defvar org-export-docbook-options-plist nil)
+(defvar org-docbook-para-open nil)
+(defvar org-export-docbook-inline-images t)
+(defvar org-export-docbook-link-org-files-as-docbook nil)
 
 ;;; User variables:
 
@@ -64,45 +90,51 @@
   :tag "Org Export DocBook"
   :group 'org-export)
 
-(defcustom org-export-docbook-document-type "article"
-  "The default DocBook document type, which can be either \"article\" or \"book\"."
-  :group 'org-export-docbook
-  :type 'string)
-
 (defcustom org-export-docbook-extension ".xml"
-  "The extension for exported DocBook files."
+  "Extension of DocBook XML files."
   :group 'org-export-docbook
   :type 'string)
 
 (defcustom org-export-docbook-header "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-  "The header of exported DocBook files."
+  "Header of DocBook XML files."
   :group 'org-export-docbook
   :type 'string)
 
-(defcustom org-export-docbook-doctype "<!DOCTYPE article [
+(defcustom org-export-docbook-doctype nil
+  "DOCTYPE declaration string for DocBook XML files.
+This can be used to include entities that are needed to handle
+special characters in Org files.
+
+For example, if the Org file to be exported contains XHTML
+entities, you can set this variable to:
+
+\"<!DOCTYPE article [
 <!ENTITY % xhtml1-symbol PUBLIC
 \"-//W3C//ENTITIES Symbol for HTML//EN//XML\"
 \"http://www.w3.org/2003/entities/2007/xhtml1-symbol.ent\"
 >
 %xhtml1-symbol;
 ]>
-"
-  "DOCTYPE declaration string for the DocBook XML file.  This can be
-used to include entities that are needed to handle special characters."
+\"
+
+If you want to process DocBook documents without internet
+connection, it is suggested that you download the required entity
+file(s) and use system identifier(s) (external files) in the
+DOCTYPE declaration."
   :group 'org-export-docbook
   :type 'string)
 
 (defcustom org-export-docbook-article-header "<article xmlns=\"http://docbook.org/ns/docbook\"
          xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"5.0\" xml:lang=\"en\">"
-  "The article header of exported DocBook files."
+  "Article header of DocBook XML files."
   :group 'org-export-docbook
   :type 'string)
 
 (defcustom org-export-docbook-section-id-prefix "sec-"
-  "The prefix of section IDs used during exporting.  This can be
-set before exporting to avoid same set of section IDs being used
-again and again, which can be a problem when different people
-work on the same document (e.g. a big book)."
+  "Prefix of section IDs used during exporting.
+This can be set before exporting to avoid same set of section IDs
+being used again and again, which can be a problem when multiple
+people work on the same document."
   :group 'org-export-docbook
   :type 'string)
 
@@ -132,9 +164,9 @@ conversions."
 (defcustom org-export-docbook-default-image-attributes
   `(("align" . "\"center\"")
     ("valign". "\"middle\""))
-  "Alist of default DocBook image attributes.  These attributes
-will be inserted into element <imagedata> by default, but users
-can override them using `#+ATTR_DocBook:'."
+  "Alist of default DocBook image attributes.
+These attributes will be inserted into element <imagedata> by
+default, but users can override them using `#+ATTR_DocBook:'."
   :group 'org-export-docbook
   :type 'alist)
 
@@ -145,16 +177,66 @@ can override them using `#+ATTR_DocBook:'."
   :type '(repeat (string :tag "Extension")))
 
 (defcustom org-export-docbook-coding-system nil
-  "Coding system for the exported Docbook file."
+  "Coding system for DocBook XML files."
   :group 'org-export-docbook
   :type 'coding-system)
 
+(defcustom org-export-docbook-xslt-proc-command nil
+  "XSLT processor command used by DocBook exporter.
+This is the command used to process a DocBook XML file to
+generate the formatting object (FO) file.
+
+The value of this variable should be a format control string that
+includes two `%s' arguments: the first one is for the output FO
+file name, and the second one is for the input DocBook XML file
+name.
+
+For example, if you use Saxon as the XSLT processor, you may want
+to set the variable to
+
+  \"java com.icl.saxon.StyleSheet -o %s %s /path/to/docbook.xsl\"
+
+If you use Xalan, you can set it to
+
+  \"java org.apache.xalan.xslt.Process -out %s -in %s -xsl /path/to/docbook.xsl\"
+
+For xsltproc, the following string should work:
+
+  \"xsltproc --output %s /path/to/docbook.xsl %s\"
+
+You need to replace \"/path/to/docbook.xsl\" with the actual path
+to the DocBook stylesheet file on your machine.  You can also
+replace it with your own customization layer if you have one.
+
+You can include additional stylesheet parameters in this command.
+Just make sure that they meet the syntax requirement of each
+processor."
+  :group 'org-export-docbook
+  :type 'string)
+
+(defcustom org-export-docbook-xsl-fo-proc-command nil
+  "XSL-FO processor command used by DocBook exporter.
+This is the command used to process a formatting object (FO) file
+to generate the PDF file.
+
+The value of this variable should be a format control string that
+includes two `%s' arguments: the first one is for the input FO
+file name, and the second one is for the output PDF file name.
+
+For example, if you use FOP as the XSL-FO processor, you can set
+the variable to
+
+  \"fop %s %s\""
+  :group 'org-export-docbook
+  :type 'string)
 
 ;;; Autoload functions:
 
 ;;;###autoload
 (defun org-export-as-docbook-batch ()
-  "Call `org-export-as-docbook', may be used in batch processing.
+  "Call `org-export-as-docbook' in batch style.
+This function can be used in batch processing.
+
 For example:
 
 $ emacs --batch
@@ -199,13 +281,13 @@ then use this command to convert it."
 ;;;###autoload
 (defun org-export-region-as-docbook (beg end &optional body-only buffer)
   "Convert region from BEG to END in `org-mode' buffer to DocBook.
-If prefix arg BODY-ONLY is set, omit file header, footer, and table of
-contents, and only produce the region of converted text, useful for
-cut-and-paste operations.
-If BUFFER is a buffer or a string, use/create that buffer as a target
-of the converted DocBook.  If BUFFER is the symbol `string', return the
-produced DocBook as a string and leave not buffer behind.  For example,
-a Lisp program could call this function in the following way:
+If prefix arg BODY-ONLY is set, omit file header and footer and
+only produce the region of converted text, useful for
+cut-and-paste operations.  If BUFFER is a buffer or a string,
+use/create that buffer as a target of the converted DocBook.  If
+BUFFER is the symbol `string', return the produced DocBook as a
+string and leave not buffer behind.  For example, a Lisp program
+could call this function in the following way:
 
   (setq docbook (org-export-region-as-docbook beg end t 'string))
 
@@ -228,16 +310,51 @@ in a window.  A non-interactive call will only retunr the buffer."
 	(switch-to-buffer-other-window rtn)
       rtn)))
 
+;;;###autoload
+(defun org-export-as-docbook-pdf (&optional hidden ext-plist
+                                            to-buffer body-only pub-dir)
+  "Export as DocBook XML file, and generate PDF file."
+  (interactive "P")
+  (if (or (not org-export-docbook-xslt-proc-command)
+          (not (string-match "%s.+%s" org-export-docbook-xslt-proc-command)))
+      (error "XSLT processor command is not set correctly"))
+  (if (or (not org-export-docbook-xsl-fo-proc-command)
+          (not (string-match "%s.+%s" org-export-docbook-xsl-fo-proc-command)))
+      (error "XSL-FO processor command is not set correctly"))
+  (message "Exporting to PDF...")
+  (let* ((wconfig (current-window-configuration))
+	 (docbook-buf (org-export-as-docbook hidden ext-plist
+                                             to-buffer body-only pub-dir))
+	 (filename (buffer-file-name docbook-buf))
+	 (base (file-name-sans-extension filename))
+         (fofile (concat base ".fo"))
+	 (pdffile (concat base ".pdf")))
+    (and (file-exists-p pdffile) (delete-file pdffile))
+    (message "Processing DocBook XML file...")
+    (shell-command (format org-export-docbook-xslt-proc-command
+                           fofile (shell-quote-argument filename)))
+    (shell-command (format org-export-docbook-xsl-fo-proc-command
+                           fofile pdffile))
+    (message "Processing DocBook file...done")
+    (if (not (file-exists-p pdffile))
+	(error "PDF file was not produced")
+      (set-window-configuration wconfig)
+      (message "Exporting to PDF...done")
+      pdffile)))
 
-;; FIXME: add document for this variable.
-(defvar org-docbook-para-open nil)
-(defvar org-export-docbook-inline-images t)
-(defvar org-export-docbook-link-org-files-as-docbook nil)
+;;;###autoload
+(defun org-export-as-docbook-pdf-and-open ()
+  "Export as DocBook XML file, generate PDF file, and open it."
+  (interactive)
+  (let ((pdffile (org-export-as-docbook-pdf)))
+    (if pdffile
+	(org-open-file pdffile)
+      (error "PDF file was not produced"))))
 
 ;;;###autoload
 (defun org-export-as-docbook (&optional hidden ext-plist
                                         to-buffer body-only pub-dir)
-  "Export the outline as a DocBook file.
+  "Export the current buffer as a DocBook file.
 If there is an active region, export only the region.  When
 HIDDEN is non-nil, don't display the HTML buffer.  EXT-PLIST is a
 property list with external parameters overriding org-mode's
@@ -609,7 +726,6 @@ publishing directory."
 	  (or (string-match org-table-hline-regexp line)
 	      (setq line (org-docbook-expand line)))
 
-          ;; FIXME
 	  ;; Format the links
 	  (setq start 0)
 	  (while (string-match org-bracket-link-analytic-regexp++ line start)
@@ -636,12 +752,7 @@ publishing directory."
 			      desc org-export-docbook-inline-image-extensions))
 	      (save-match-data
 		(if (string-match "^file:" desc)
-		    (setq desc (substring desc (match-end 0)))))
-              ;; Currently we do not support click-able image in DocBook.
-;; 	      (setq desc (org-add-props
-;; 			     (concat "<img src=\"" desc "\"/>")
-;; 			     '(org-protected t)))
-              )
+		    (setq desc (substring desc (match-end 0))))))
 	    ;; FIXME: do we need to unescape here somewhere?
 	    (cond
 	     ((equal type "internal")
@@ -956,7 +1067,8 @@ publishing directory."
 
       (unless (plist-get opt-plist :buffer-will-be-killed)
 	(normal-mode)
-	(if (eq major-mode default-major-mode) (html-mode)))
+	(if (eq major-mode default-major-mode)
+            (nxml-mode)))
 
       ;; Remove empty paragraphs and lists.  Replace them with a
       ;; newline.
@@ -1041,8 +1153,9 @@ When TITLE is nil, just close all open levels."
       (org-export-docbook-open-para))))
 
 (defun org-docbook-expand (string)
-  "Prepare STRING for DocBook export.  Applies all active conversions.
-If there are links in the string, don't modify these."
+  "Prepare STRING for DocBook export.
+Applies all active conversions.  If there are links in the
+string, don't modify these."
   (let* ((re (concat org-bracket-link-regexp "\\|"
 		     (org-re "[ \t]+\\(:[[:alnum:]_@:]+:\\)[ \t]*$")))
 	 m s l res)
@@ -1157,7 +1270,9 @@ If there are links in the string, don't modify these."
         (replace-match ""))))
 
 (defun org-export-docbook-finalize-table (table)
-  "Change table to informaltable if caption does not exist."
+  "Change TABLE to informaltable if caption does not exist.
+TABLE is a string containing the HTML code generated by
+`org-format-table-html' for a table in Org-mode buffer."
   (if (string-match
        "^<table \\(\\(.\\|\n\\)+\\)<caption></caption>\n\\(\\(.\\|\n\\)+\\)</table>"
        table)
