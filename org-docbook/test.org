@@ -44,7 +44,7 @@ are added for such sections to make generated XML document valid.
 Here is an image with caption and label:
 
 #+CAPTION: Caption of image GNU.png
-#+LABEL:   fig:gnu-png
+#+LABEL:   gnu-png
 [[~/Org/GNU.png]]
 
 You can also add attributes to element =<imagedata>= via
@@ -54,7 +54,7 @@ the default attributes that you want to append to all the images in your
 Org file.
 
 #+CAPTION: Org-mode Logo (Unicorn) in SVG Format (width="3in")
-#+LABEL:   fig:unicorn-svg
+#+LABEL:   unicorn-svg
 #+ATTR_DocBook: width="3in"
 [[~/Org/org-mode-unicorn.svg]]
 
@@ -379,9 +379,9 @@ This is a 3-level nested list:
         - Sean Austin :: He plays Sam, Frodo's friend.  I still remember
           him very well from his role as Mikey Walsh in the Goonies.
 
-[fn:1] Body of first footnote.
-[fn:2] Body of second footnote.
-[fn:three] This is the body of the third footnote, and it is long,
+[fn:1] Body of /first/ footnote.
+[fn:2] Body of /second/ footnote.
+[fn:three] This is the body of the /third/ footnote, and it is long,
 \par and it is long, and it is long, and it is long, and it is long,
 \par and it is long, and it is long, and it is long, and it is long,
 \par and it is long, and it is long, and it is long.... Stop here!
