@@ -4,6 +4,20 @@
 # $Id$
 #
 
+This directory contains the (old version of) DocBook exporter for
+Org-mode (http://orgmode.org).  As of March 29, 2009, this exporter has
+been integrated into Org-mode git repository by Carsten Dominik (Thanks,
+Carsten!), and will be part of next Org-mode release (6.25).
+
+Future development of DocBook exporter will be done in Org-mode git
+repository, and will not be continued here.
+
+Below is the old content of this README file.
+
+Baoqiu
+
+------------------------------------------------------------------------
+
 This is the DocBook exporter for Org-mode, a tool written in Emacs Lisp
 to export text files written in Org-mode to DocBook format.  You need to
 download the latest development version of Org-mode from
@@ -39,3 +53,4 @@ email to cbaoqiu AT yahoo DOT com.
 
 
 Baoqiu Cui
+------------------------------------------------------------------------
