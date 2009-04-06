@@ -34,8 +34,10 @@ are added for such sections to make generated XML document valid.
 *** Subsection x.2.1
 
 **** Subsection x.2.1.1
-***** Subsection x.2.1.1.1
-****** Subsection x.2.1.1.1.1
+***** Subsection x.2.1.1.1 (Level 5)
+****** Subsection x.2.1.1.1.1 (Level 6)
+******* Subsection x.2.1.1.1.1.1 (Level 7)
+******** Subsection x.2.1.1.1.1.1.1 (Level 8)
 
 ** Subsection x.3
 
@@ -82,6 +84,29 @@ superscript.  We may need to find other better-looking formats.
 ** DONE My Second Item.
 
 ** TODO My Third Item.                                            :home:_old:
+
+* Inline Tasks (TODOs)
+
+This sections contains some inline task:
+
+**************** TODO some small task
+                 DEADLINE: <2009-03-30 Mon>
+                 :PROPERTIES:
+                   :SOMETHING: or other
+                 :END:
+                 And here is some extra text
+**************** END
+
+**************** TODO This is the first inline TODO
+                 I need to do that following thing for the first TODO:
+                 1. First item for first TODO
+                 2. Second item for first TODO
+
+**************** TODO This is the second inline TODO
+                 This is my second TODO.
+
+**************** TODO This is the third inline TODO
+                 This is my third TODO.
 
 * About Footnotes
 
@@ -432,7 +457,6 @@ or
 :    #+BEGIN_DOCBOOK
 :    All lines between these markers are exported literally.
 :    #+END_DOCBOOK
-
 Here are three examples (notice that the last one is a *warning*
 admonition in DocBook, something that Org-mode does not provide):
 
@@ -450,6 +474,8 @@ mc<superscript>2</superscript>.</para>
   DocBook exporter if you are not careful!</para>
 </warning>
 #+END_DOCBOOK
+This is a paragraph right after the DocBook code block, and should be
+wrapped into a paragraph.
 
 * About Text Centering
 
@@ -466,6 +492,8 @@ Repeat the above paragraph:
 
 Everything should be made as simple as possible, but not any simpler.
 #+END_CENTER
+This is a paragraph right after the centered block, and should be
+wrapped into a paragraph.
 
 * Special Characters
 
