@@ -81,9 +81,11 @@ superscript.  We may need to find other better-looking formats.
 
 ** TODO My First Item.                                          :work:urgent:
 
-** DONE My Second Item.
+** DONE My Second Item
+   CLOSED: [2009-04-14 Tue 18:51]
 
 ** TODO My Third Item.                                            :home:_old:
+   SCHEDULED: [2009-04-14 Tue 18:51] aaa bbb CLOSED: [2009-04-14 Tue 20:30] ccc
 
 * Inline Tasks (TODOs)
 
@@ -376,8 +378,9 @@ This is a 3-level nested list:
 
                      Third paragraph in description one.  After this
                      paragraph, we have two consecutive lists with
-                     different list types.  These two lists should be
-                     exported correctly as /two/ different lists:
+                     different list types.  These two lists should have
+                     been exported as /two/ different lists, but Org
+                     mode currently does not support this:
 
                      1. Ordered list item one
                      2. Ordered list item two
