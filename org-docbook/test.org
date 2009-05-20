@@ -2,6 +2,7 @@
 #+TITLE: Exporting Org Files to DocBook
 #+EMAIL: cbaoqiu@yahoo.com
 #+STARTUP: showall
+#+MACRO: TTL Time To Live
 #
 # $Id$
 #
@@ -538,3 +539,15 @@ For example, the following line in an Org file will generate this:
 :     \alpha \le \sum 2^{\beta^{\gamma}} + \delta
 
 Characters like <, >, and & should be exported as HTML entities.
+
+* About Macros
+
+We can use macros to include current date and time in Org file, like
+this: {{{date(%Y-%m-%d %H:%M:%S)}}}.  We can also use macros to expand
+some commonly used abbreviations.  For example: "{{{TTL}}}" (expanded
+from macro =TTL=) for cache can be configured in the following lines in
+the configuration file:
+
+#+BEGIN_EXAMPLE
+{{{TTL}}} of cache: 1000 minutes.
+#+END_EXAMPLE
