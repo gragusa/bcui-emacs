@@ -147,6 +147,8 @@ File link: [[file:~/.emacs::45]].
 
 File link: file:~/Org/test0.org.
 
+Internal link: [[About%20Macros][Link to a section]].
+
 Check the first footnote for the third time. [fn:1]
 
 * About Tables
@@ -391,10 +393,32 @@ This is a 3-level nested list:
                      - Itemized list item three
 
                   2. Description two.
-                     : Code in description two (line 1)
-                     : Code in description two (line 2)
-
+                     #+BEGIN_EXAMPLE
+                     Code for "Description two" (line 1)
+                     Code for "Description two" (line 2)
+                     #+END_EXAMPLE
                   3. Description three.
+
+                     The following example is part of Item "Description
+                     three":
+                     : Code line 1 for "Description three".
+                     : Code line 2 for "Description three".
+
+                  The following example /breaks/ the above ordered list
+                  because of the indentation level of =#+BEGIN_EXAMPLE=.
+                  So this example becomes a paragraph that is parallel
+                  to the above list.  Note that /all/ leading spaces in
+                  the example are removed, which is not that perfect.
+
+                  #+BEGIN_EXAMPLE
+                            This is an example for Term TWO
+                  #+END_EXAMPLE
+
+                  After the above example, we now start a new ordered
+                  list:
+
+                  1. New list for Term TWO (item 1)
+                  2. New list for Term TWO (item 2)
 
       Another paragraph for "Term TWO".
     
