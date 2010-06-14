@@ -90,26 +90,28 @@ superscript.  We may need to find other better-looking formats.
 
 * Inline Tasks (TODOs)
 
+(OBSOLETE)
+
 This sections contains some inline task:
 
-**************** TODO some small task
-                 DEADLINE: <2009-03-30 Mon>
-                 :PROPERTIES:
-                   :SOMETHING: or other
-                 :END:
-                 And here is some extra text
-**************** END
-
-**************** TODO This is the first inline TODO
-                 I need to do that following thing for the first TODO:
-                 1. First item for first TODO
-                 2. Second item for first TODO
-
-**************** TODO This is the second inline TODO
-                 This is my second TODO.
-
-**************** TODO This is the third inline TODO
-                 This is my third TODO.
+: **************** TODO some small task
+:                  DEADLINE: <2009-03-30 Mon>
+:                  :PROPERTIES:
+:                    :SOMETHING: or other
+:                  :END:
+:                  And here is some extra text
+: **************** END
+: 
+: **************** TODO This is the first inline TODO
+:                  I need to do that following thing for the first TODO:
+:                  1. First item for first TODO
+:                  2. Second item for first TODO
+: 
+: **************** TODO This is the second inline TODO
+:                  This is my second TODO.
+: 
+: **************** TODO This is the third inline TODO
+:                  This is my third TODO.
 
 * About Footnotes
 
@@ -575,3 +577,36 @@ the configuration file:
 #+BEGIN_EXAMPLE
 {{{TTL}}} of cache: 1000 minutes.
 #+END_EXAMPLE
+
+* About =coderef=
+
+For =coderef= like [[(foo)][FOOBIE]], DocBook exporter does not create any link as
+the target is hard to define.  The description of the link is exported
+as it is instead.
+
+#+BEGIN_EXAMPLE
+<foo>: blah blah       (ref:foo)
+#+END_EXAMPLE
+
+* About Labels and Cross References of Tables
+
+If a label is specified for a table, we can use a cross reference to
+refer to the table.  Below is an example:
+
+#+LABEL: simple-table
+#+CAPTION: A table with caption and label
+| Col1 | Col2 |
+|------+------|
+| a    | 1    |
+| b    | 2    |
+
+Here is an reference of this table: [[simple-table][Link to the simple table]].
+
+The following is a table without caption:
+
+#+LABEL: simple-table-2
+| Col1  | Col2 |
+|------+------|
+| aa   | 10   |
+| bb   | 20   |
+
