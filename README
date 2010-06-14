@@ -11,3 +11,6 @@ This directory contains:
 
 org-docbook/
     A DocBook exporter for Org-mode.
+
+grammar/
+    A grammar checker for Emacs.
